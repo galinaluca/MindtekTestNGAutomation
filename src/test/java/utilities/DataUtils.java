@@ -7,7 +7,7 @@ public class DataUtils {
     public static String generateEmail(){
         Random random=new Random();
         int emailId=random.nextInt(100000);
-        String email="abc"+emailId+"@gmail.com";
+        String email="xyz"+emailId+"@gmail.com";
         return email;
     }
     //this method will generate random number between 1 and provided number

@@ -11,8 +11,8 @@ public class StoreAppCreateAccountPage {
         WebDriver driver = Driver.getDriver();
         PageFactory.initElements(driver, this);
     }
-        @FindBy(id = "id_gender1")
-        public WebElement gender;
+    @FindBy(id = "id_gender1")
+    public WebElement gender;
 
     @FindBy(id="customer_firstname")
     public WebElement FirstNameBox;

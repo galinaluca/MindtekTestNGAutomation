@@ -13,10 +13,13 @@ import utilities.ConfigReader;
 import utilities.DataUtils;
 import utilities.TestBase;
 
+import java.io.IOException;
 import java.util.Random;
 
 public class StoreRegisterFunctionalityTests extends TestBase {
     //Data Driven Testing
+    String email;
+    String password;
     @DataProvider(name="signUpDataProvider")
     public  static Object[][] testData(){
         Object[][] data=new Object[][]{
@@ -29,19 +32,20 @@ public class StoreRegisterFunctionalityTests extends TestBase {
     }
     @Test(dataProvider = "signUpDataProvider",groups = {"regression","smokeS"})
     public void test1(String firstName,String lastName,String password, String day, String month,String year,
-                      String address, String city, String state,String zipCode, String country, String phoneNumber) {
+                      String address, String city, String state,String zipCode, String country, String phoneNumber) throws IOException {
         StoreAppLoginPage storeAppLoginPage = new StoreAppLoginPage();
         StoreAppHomePage storeAppHomePage = new StoreAppHomePage();
         StoreAppCreateAccountPage storeAppCreateAccountPage = new StoreAppCreateAccountPage();
+
         driver.get(ConfigReader.getProperty("StoreAppURL"));
         storeAppHomePage.loginButton.click();
-
-
-        storeAppLoginPage.emailBox.sendKeys(DataUtils.generateEmail());
+        email=DataUtils.generateEmail();
+        storeAppLoginPage.emailBox.sendKeys(email);
         storeAppLoginPage.submitButton.click();
         storeAppCreateAccountPage.gender.click();
         storeAppCreateAccountPage.FirstNameBox.sendKeys(firstName);
         storeAppCreateAccountPage.LastNameBox.sendKeys(lastName);
+        this.password=password;
         storeAppCreateAccountPage.PasswordBox.sendKeys(password);
 
         BrowserUtils.selectByValue(storeAppCreateAccountPage.daysBox, day);
@@ -54,9 +58,28 @@ public class StoreRegisterFunctionalityTests extends TestBase {
         BrowserUtils.selectByValue(storeAppCreateAccountPage.countryBox, country);
         storeAppCreateAccountPage.phonemobileBox.sendKeys(phoneNumber);
         storeAppCreateAccountPage.registerButton.click();
+        BrowserUtils.takeScreenshot("SignUpValidation");
         String actualTitle = driver.getTitle();
         String expectedTitle = "My account - My Store";
         Assert.assertEquals(actualTitle, expectedTitle, "Actual title " + actualTitle + " did not match");
+
+
+    }
+    //login functionality
+    @Test(dependsOnMethods = {"test1"},groups = {"regression","smoke"})
+    public void test2() throws IOException {
+        StoreAppHomePage storeAppHomePage = new StoreAppHomePage();
+        StoreAppLoginPage storeAppLoginPage=new StoreAppLoginPage();
+        driver.get(ConfigReader.getProperty("StoreAppURL"));
+        storeAppHomePage.loginButton.click();
+        storeAppLoginPage.loginEmailBox.sendKeys(email);
+        storeAppLoginPage.loginPasswordBox.sendKeys(password);
+        storeAppLoginPage.loginButton.click();
+        BrowserUtils.takeScreenshot("LogInValidation");
+        String actualTitle=driver.getTitle();
+        String expectedTitle="My account - My Store";
+        Assert.assertEquals(actualTitle,expectedTitle,"Title for login did not match");
+
 
     }
 
