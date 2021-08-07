@@ -17,4 +17,10 @@ public class DataUtils {
         int randomNum=random.nextInt(range);
         return randomNum;
     }
+    //this method will remove $  from string and will convert it do double
+    //.remove$AndConvertToDouble("$16.51);
+    public static double remove$AndConvertToDouble(String amount){
+        amount=amount.substring(1);
+        return Double.parseDouble(amount);
+    }
 }
